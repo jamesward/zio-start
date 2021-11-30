@@ -1,9 +1,15 @@
 import scala.collection.immutable.ArraySeq
 import scala.util.Try
 import scala.collection.immutable.Map
+import zio.ZIO
+import zio.blocking.Blocking
+import zio.stream.{ZStream, ZTransducer}
+
+import java.io.IOException
+import scala.collection.MapView
 
 type OptionGroups = Map[String, Set[String]]
-type OptionGroupsWithLabels = Map[String, Set[String, String]]
+type OptionGroupsWithLabels = Map[String, Set[(String, String)]]
 
 type Archetypes = Map[String, OptionGroups]
 type ArchetypesWithLabels = Map[String, OptionGroupsWithLabels]
@@ -73,14 +79,40 @@ object Templater:
 
       Either.cond(missingOptions.values.flatten.isEmpty, archetypesWithOptionGroups, missingOptions)
 
-  /*
-  def getLabels(archetypes: Archetypes): ZIO[Any, IOException, ArchetypesWithLabels] =
+  case class CouldNotReadLabel(optionGroupKey: String, optionKey: String)
+
+  // todo: classpath from environment?
+  def getLabels(archetypes: Archetypes): ZIO[Blocking, IOException | CouldNotReadLabel, ArchetypesWithLabels] =
     val all = archetypes.view.mapValues {
-      optionGroups =>
-        optionGroups.map {
-          case (optionGroupKey, optionKey) =>
-            val path = s"start/options/$optionGroupKey/$optionKey.patch"
-            getClass.getClassLoader.getResourceAsStream(path)
+        optionGroups =>
+          ZIO.foreach(optionGroups) {
+            case (optionGroupKey, optionKeys) =>
+              val optionsWithLabels: ZIO[Blocking, IOException | CouldNotReadLabel, Set[(String, String)]] = ZIO.foreach(optionKeys) {
+                optionKey =>
+                  val path = s"start/options/$optionGroupKey/$optionKey.patch"
+                  val is = getClass.getClassLoader.getResourceAsStream(path)
+                  if is == null then
+                    ZIO.fail(CouldNotReadLabel(optionGroupKey, optionKey))
+                  else
+                    val firstLineStream = ZStream.fromInputStream(is).transduce(ZTransducer.utf8Decode >>> ZTransducer.splitLines).take(1)
+                    firstLineStream.runLast.flatMap {
+                      maybeLabel =>
+                        maybeLabel.fold(
+                          ZIO.fail(CouldNotReadLabel(optionGroupKey, optionKey))
+                        ) {
+                          label =>
+                            ZIO.succeed(optionKey -> label)
+                        }
+                    }
+              }
+
+              optionsWithLabels.map(optionGroupKey -> _)
+          }
+      }
+
+    ZIO.foreach(all.toMap) {
+      case (archetypeKey, optionsWithLabels) =>
+        optionsWithLabels.map {
+          archetypeKey -> _
         }
     }
-  */

@@ -65,4 +65,34 @@ object TemplaterSpec extends DefaultRunnableSpec:
     )
     assert(result)(isRight(equalTo(expected)))
 
-  def spec = suite("Templater")(test1, test2, test3, test4, test5, test6, test7, test8)
+  val suite1 = suite("parseTree")(test1, test2, test3, test4, test5, test6, test7, test8)
+
+  val s2t1 = testM("work when labels exist"):
+    val paths = Set(
+      "archetypes/atype/options/anoptiongroup-anoption.patch",
+      "archetypes/atype/options/anoptiongroup-anotheroption.patch",
+      "options/anoptiongroup/anoption.patch",
+      "options/anoptiongroup/anotheroption.patch",
+    )
+    val tree = Templater.parseTree(paths)
+    val expected = Map(
+      "atype" -> Map("anoptiongroup" -> Set("anoption" -> "An Option", "anotheroption" -> "Another Option"))
+    )
+
+    for
+      treeWithLabels <- Templater.getLabels(tree.toOption.get)
+    yield
+      assert(treeWithLabels)(equalTo(expected))
+
+  val s2t2 = testM("fail when the option does not exist"):
+    val paths = Set(
+      "archetypes/atype/options/anoptiongroup-foo.patch",
+      "options/anoptiongroup/foo.patch",
+    )
+    val tree = Templater.parseTree(paths)
+
+    assertM(Templater.getLabels(tree.toOption.get).run)(fails(isSubtype[Templater.CouldNotReadLabel](anything)))
+
+  val suite2 = suite("getLabels")(s2t1, s2t2)
+
+  def spec = suite("Templater")(suite2)

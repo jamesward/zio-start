@@ -1,0 +1,7 @@
+Scala 3
+diff -ruN build.sbt build.sbt
+--- build.sbt
++++ build.sbt
+@@ -1,0 +1,2 @@
++
++scalaVersion := "3.1.0"

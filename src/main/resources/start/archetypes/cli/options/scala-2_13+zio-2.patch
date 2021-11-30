@@ -1,0 +1,37 @@
+diff -ruN src/main/scala/Hello.scala src/main/scala/Hello.scala
+--- src/main/scala/Hello.scala
++++ src/main/scala/Hello.scala
+@@ -0,0 +1,10 @@
++import zio._
++import zio.console._
++
++object Hello extends App {
++
++  val app = putStr("hello, world")
++
++  def run(args: List[String]) = app.exitCode
++
++}
+
+diff -ruN src/test/scala/HelloSpec.scala src/test/scala/HelloSpec.scala
+--- src/test/scala/HelloSpec.scala
++++ src/test/scala/HelloSpec.scala
+@@ -0,0 +1,18 @@
++import zio.test._
++import zio.test.Assertion._
++import zio.test.Assertion.Render._
++import zio.test.environment.TestConsole
++
++object HelloSpec extends DefaultRunnableSpec {
++
++  def spec =
++    suite("Hello")(
++      testM("outputs hello, world") {
++        for {
++          _      <- Hello.app
++          output <- TestConsole.output
++        } yield assert(output)(equalTo(Vector("hello, world")))
++      }
++    )
++
++}

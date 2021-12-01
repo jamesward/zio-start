@@ -1,3 +1,5 @@
+enablePlugins(SbtTwirl)
+
 name := "zio-start"
 
 scalaVersion := "3.1.1-RC1-bin-20210927-3f978b3-NIGHTLY"
@@ -27,5 +29,12 @@ libraryDependencies ++= Seq(
   "io.d11" %% "zhttp-test" % "1.0.0.0-RC17+47-0ea2e2b7-SNAPSHOT" % Test,
   //  "org.slf4j"  %  "slf4j-simple"        % "1.7.30",
 )
+
+libraryDependencies := libraryDependencies.value.map {
+  case module if module.name == "twirl-api" =>
+    module.withCrossVersion(CrossVersion.for3Use2_13)
+  case module =>
+    module
+}
 
 testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")

@@ -181,6 +181,7 @@ object Templater:
                    .run
             //err <- process.stderr.string // todo: propagate err & out to the error channel on error
             //out <- process.stdout.string
+            //_ <- process.exitCode
             _ <- process.successfulExitCode
           yield
             //println(err)

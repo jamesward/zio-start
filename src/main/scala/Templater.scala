@@ -150,10 +150,7 @@ object Templater:
     copies.unit
 
 
-  case class ReadError()
-
   def applyPatches(dir: File, archetypeKey: String, options: Map[String, String]): ZIO[Blocking, DoesNotExist | Exception, Unit] =
-    println(dir)
     if !dir.exists() then
       ZIO.fail(DoesNotExist(dir))
     else
@@ -190,3 +187,24 @@ object Templater:
             //println(out)
             ()
       patches.unit
+
+  case class ExistsAlready(f: File)
+
+  // todo: zioify
+  // note: preserving file posix settings is necessary
+  def zip(dir: File, out: File): ZIO[Blocking, CommandError | DoesNotExist | ExistsAlready, Unit] =
+    if !dir.exists() then
+      ZIO.fail(DoesNotExist(dir))
+    else if out.exists() then
+      ZIO.fail(ExistsAlready(out))
+    else
+      for
+        process <- Command("zip", "-r", out.getAbsolutePath, dir.getName).workingDirectory(dir.getParentFile).run
+        //err <- process.stderr.string // todo: propagate err & out to the error channel on error
+        //out <- process.stdout.string
+        //_ <- process.exitCode
+        _ <- process.successfulExitCode
+      yield
+        //println(err)
+        //println(out)
+        ()

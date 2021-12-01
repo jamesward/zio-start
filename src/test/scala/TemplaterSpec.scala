@@ -149,4 +149,18 @@ object TemplaterSpec extends DefaultRunnableSpec:
   val suite5 = suite("applyPatches")(s5t1)
 
 
-  def spec = suite("Templater")(suite5) //(suite1, suite2, suite3, suite4, suite5)
+  val s6t1 = testM("work"):
+    val dir = Files.createTempDirectory("templater").toFile
+    val zip = Files.createTempFile("templater", ".zip").toFile
+    zip.delete() // zip creates it and we just use createTempFile to get a unique name (ie I'm lazy)
+
+    for
+      _ <- Templater.copyTemplate(dir)
+      _ <- Templater.zip(dir, zip)
+    yield
+      // todo: test zip contents
+      assert(zip.exists())(isTrue)
+
+  val suite6 = suite("zip")(s6t1)
+
+  def spec = suite("Templater")(suite1, suite2, suite3, suite4, suite5, suite6)

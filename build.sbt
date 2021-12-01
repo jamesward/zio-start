@@ -11,9 +11,14 @@ resolvers += "Sonatype OSS Snapshots s01" at "https://s01.oss.sonatype.org/conte
 
 libraryDependencies ++= Seq(
   "dev.zio" %% "zio"          % zioVersion,
-  "dev.zio" %% "zio-test"     % zioVersion % Test,
+
+  "dev.zio" %% "zio-process" % "0.5.0",
 
   "io.d11" %% "zhttp"         % "1.0.0.0-RC17",
+
+  "io.github.classgraph" % "classgraph" % "4.8.137",
+
+  "dev.zio" %% "zio-test"     % zioVersion % Test,
 
   "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
 

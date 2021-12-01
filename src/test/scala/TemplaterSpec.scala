@@ -1,9 +1,11 @@
+import zio.ZIO
 import zio.test.*
 import zio.test.Assertion.*
 import zio.test.Assertion.Render.*
 import zio.test.environment.TestRandom
 
-import java.io.IOException
+import java.nio.file.Files
+import java.io.{File, IOException}
 
 object TemplaterSpec extends DefaultRunnableSpec:
   val test1 = test("fail when archetypes dir does not exist"):
@@ -95,4 +97,56 @@ object TemplaterSpec extends DefaultRunnableSpec:
 
   val suite2 = suite("getLabels")(s2t1, s2t2)
 
-  def spec = suite("Templater")(suite2)
+
+  val s3t1 = testM("work"):
+    // todo: the classpath should really be an environment
+    val expected = Map(
+      "cli" -> Map(
+        "scala" -> Set("3" -> "Scala 3", "2_13" -> "Scala 2.13"),
+        "zio" -> Set("2" -> "ZIO 2", "1" -> "ZIO 1"),
+      ),
+      "foo" -> Map(
+        "anoptiongroup" -> Set("anoption" -> "An Option")
+      )
+    )
+
+    for
+      archetypes <- Templater.getArchetypes()
+    yield assert(archetypes)(equalTo(expected))
+
+  val suite3 = suite("getArchetypes")(s3t1)
+
+
+  // todo: manage tmp dir resource and clean it up
+  val s4t1 = testM("work"):
+    val f = Files.createTempDirectory("templater").toFile
+
+    // todo: classpath environment
+    for
+      _ <- Templater.copyTemplate(f)
+    yield
+      // todo: test file permissions
+      val nf = File(f, "build.sbt")
+      assert(nf.exists())(isTrue)
+
+  val suite4 = suite("copyTemplate")(s4t1)
+
+
+  // todo: manage tmp dir resource and clean it up
+  val s5t1 = testM("work"):
+    val f = Files.createTempDirectory("templater").toFile
+
+    for
+      _ <- Templater.copyTemplate(f)
+      _ <- Templater.applyPatches(f, "foo", Map("anoptiongroup" -> "anoption"))
+    yield
+      // todo: test file contents
+      val tf = File(f, "anoptiongroup-anoption.txt")
+      assert(tf.exists())(isTrue)
+      val of = File(f, "anoption.txt")
+      assert(of.exists())(isTrue)
+
+  val suite5 = suite("applyPatches")(s5t1)
+
+
+  def spec = suite("Templater")(suite5) //(suite1, suite2, suite3, suite4, suite5)

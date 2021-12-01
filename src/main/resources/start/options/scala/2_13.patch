@@ -1,5 +1,4 @@
 Scala 2.13
-diff -ruN build.sbt build.sbt
 --- build.sbt
 +++ build.sbt
 @@ -1,0 +1,2 @@

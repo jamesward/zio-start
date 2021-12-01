@@ -1,5 +1,4 @@
 ZIO 2
-diff -ruN build.sbt build.sbt
 --- build.sbt
 +++ build.sbt
 @@ -1,1 +1,1 @@

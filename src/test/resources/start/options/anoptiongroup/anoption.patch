@@ -1,1 +1,5 @@
 An Option
+--- anoption.txt
++++ anoption.txt
+@@ -0,0 +1,1 @@
++test anoption

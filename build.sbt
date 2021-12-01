@@ -1,4 +1,4 @@
-enablePlugins(SbtTwirl)
+enablePlugins(SbtTwirl, JavaAppPackaging)
 
 name := "zio-start"
 

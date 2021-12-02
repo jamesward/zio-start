@@ -4,11 +4,11 @@
 +import zio.*
 +import zio.Console.*
 +
-+object Hello extends App:
++object Hello extends ZIOAppDefault:
 +
 +  val app = print("hello, world")
 +
-+  def run(args: List[String]) = app.exitCode
++  def run = app.exitCode
 
 --- src/test/scala/HelloSpec.scala
 +++ src/test/scala/HelloSpec.scala

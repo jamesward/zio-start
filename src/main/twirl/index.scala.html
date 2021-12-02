@@ -40,53 +40,68 @@
 
                         const options = selected.join('+');
 
-                        /*
                         const a = document.createElement('a');
                         a.href = `/zip/${archetype}/${options}`;
                         a.download = `${archetype}.zip`;
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
-                         */
                     });
                 }
             });
 
         </script>
+
+        <style>
+            #main {
+                margin-top: 70px;
+            }
+        </style>
     </head>
     <body>
-        Select Archetype:
-        <div class="accordion" id="archetypes">
-            @for((archetype, optionGroups) <- archetypesWithLabels) {
-                <div id="@archetype" class="archetype accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@archetype-collapse">
-                            @archetype
-                        </button>
-                    </h2>
-                    <div id="@archetype-collapse" class="accordion-collapse collapse" data-bs-parent="#archetypes">
-                        <div class="accordion-body">
-                            <form>
-                                @for((optionGroupKey, options) <- optionGroups) {
-                                    <div id="@optionGroupKey" class="optionGroup">
-                                        @optionGroupKey:
-                                        @for((optionKey, optionLabel) <- options) {
-                                            <div class="form-check">
-                                                <input class="form-check-input @archetype-option" type="radio" name="@optionGroupKey" value="@optionKey" id="@optionGroupKey-@optionKey">
-                                                <label class="form-check-label" for="@optionGroupKey-@optionKey">@optionLabel</label>
-                                            </div>
-                                        }
-                                    </div>
-                                }
+        <nav class="navbar fixed-top navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand">ZIO Start</a>
+                <form class="d-flex">
+                    <a href="https://github.com/jamesward/zio-start/blob/main/README.md" target="_blank" class="btn btn-outline-secondary">About</a>
+                </form>
+            </div>
+        </nav>
+        <div id="main">
+            Select Archetype:
+            <div class="accordion" id="archetypes">
+                @for((archetype, optionGroups) <- archetypesWithLabels) {
+                    <div id="@archetype" class="archetype accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@archetype-collapse">
+                                @archetype
+                            </button>
+                        </h2>
+                        <div id="@archetype-collapse" class="accordion-collapse collapse" data-bs-parent="#archetypes">
+                            <div class="accordion-body">
+                                <form>
+                                    @for((optionGroupKey, options) <- optionGroups) {
+                                        <div id="@optionGroupKey" class="optionGroup">
+                                            @optionGroupKey:
+                                            @for((optionKey, optionLabel) <- options) {
+                                                <div class="form-check">
+                                                    <input class="form-check-input @archetype-option" type="radio" name="@optionGroupKey" value="@optionKey" id="@optionGroupKey-@optionKey">
+                                                    <label class="form-check-label" for="@optionGroupKey-@optionKey">@optionLabel</label>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
 
-                                <button class="download" data-archetype="@archetype" data-bs-toggle="modal" data-bs-target="#downloadInstructions">Download ZIP</button>
-                                <button disabled>Create GitHub Repo</button>
-                                <button disabled>Cloud Deploy</button>
-                            </form>
+                                    <button class="download" data-archetype="@archetype" data-bs-toggle="modal" data-bs-target="#downloadInstructions">Download ZIP</button>
+                                    <button disabled>Create GitHub Repo</button>
+                                    <button disabled>Cloud Deploy</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-        }
+                }
+            </div>
+        </div>
 
         <div id="downloadInstructions" class="modal" tabindex="-1">
             <div class="modal-dialog">

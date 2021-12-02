@@ -1,35 +1,29 @@
 --- src/main/scala/Hello.scala
 +++ src/main/scala/Hello.scala
-@@ -0,0 +1,10 @@
-+import zio._
-+import zio.console._
+@@ -0,0 +1,8 @@
++import zio.*
++import zio.Console.*
 +
-+object Hello extends App {
++object Hello extends App:
 +
-+  val app = putStr("hello, world")
++  val app = print("hello, world")
 +
 +  def run(args: List[String]) = app.exitCode
-+
-+}
 
 --- src/test/scala/HelloSpec.scala
 +++ src/test/scala/HelloSpec.scala
-@@ -0,0 +1,18 @@
-+import zio.test._
-+import zio.test.Assertion._
-+import zio.test.Assertion.Render._
-+import zio.test.environment.TestConsole
+@@ -0,0 +1,14 @@
++import zio.test.*
++import zio.test.Assertion.*
++import zio.test.Assertion.Render.*
 +
-+object HelloSpec extends DefaultRunnableSpec {
++object HelloSpec extends DefaultRunnableSpec:
 +
-+  def spec =
-+    suite("Hello")(
-+      testM("outputs hello, world") {
-+        for {
-+          _      <- Hello.app
-+          output <- TestConsole.output
-+        } yield assert(output)(equalTo(Vector("hello, world")))
-+      }
-+    )
++  val hello = test("outputs hello, world") {
++    for
++      _ <- Hello.app
++      output <- TestConsole.output
++    yield assert(output)(equalTo(Vector("hello, world")))
++  }
 +
-+}
++  def spec = suite("Hello")(hello)

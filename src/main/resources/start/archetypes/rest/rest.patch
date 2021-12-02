@@ -1,0 +1,13 @@
+REST Application
+--- README.md
++++ README.md
+@@ -0,0 +1,8 @@
++# ZIO REST
++
++```
++./sbt run
++```
++
++```
++./sbt test
++```

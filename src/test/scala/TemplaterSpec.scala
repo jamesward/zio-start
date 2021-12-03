@@ -107,6 +107,10 @@ object TemplaterSpec extends DefaultRunnableSpec:
       ),
       "foo" -> Map(
         "anoptiongroup" -> Set("anoption" -> "An Option")
+      ),
+      "rest" -> Map(
+        "scala" -> Set("3" -> "Scala 3"),
+        "zio" -> Set("1" -> "ZIO 1"),
       )
     )
 
@@ -145,6 +149,8 @@ object TemplaterSpec extends DefaultRunnableSpec:
       assert(tf.exists())(isTrue)
       val of = File(f, "anoption.txt")
       assert(of.exists())(isTrue)
+      val ff = File(f, "foo.txt")
+      assert(ff.exists())(isTrue)
 
   val suite5 = suite("applyPatches")(s5t1)
 

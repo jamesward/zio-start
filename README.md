@@ -11,7 +11,8 @@ A little webapp to start new ZIO projects. Inspired by Typesafe Activator, start
 - Cloud Deploy
 - Integration test all of the architype option combos.
 - Generate the matrix of projects at build time?
-- 
+- Run tests in CI
+- GraalVMify
 
 ## Notes
 - `src/main/resources/start/options/*/*.patch` must have a first line that is the label for the option in the UI

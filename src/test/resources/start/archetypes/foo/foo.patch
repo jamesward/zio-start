@@ -1,0 +1,5 @@
+A Foo Patch
+--- foo.txt
++++ foo.txt
+@@ -0,0 +1,1 @@
++test foo

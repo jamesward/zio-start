@@ -160,13 +160,21 @@ object Templater:
 
       val stringifiedOptions = stringifiedOptionsList.mkString("+")
 
-      val archetypePatchFile = s"start/archetypes/$archetypeKey/options/$stringifiedOptions.patch"
+      val archetypeOptionsPatchFile = s"start/archetypes/$archetypeKey/options/$stringifiedOptions.patch"
+
+      val archetypePatchFile = s"start/archetypes/$archetypeKey/$archetypeKey.patch"
+      val archetypePatches = if getClass.getClassLoader.getResource(archetypePatchFile) != null then
+        Seq(archetypePatchFile)
+      else
+        Seq.empty
+
+
 
       val optionPatchFiles = options.map:
         case (optionGroupKey, optionKey) =>
           s"start/options/$optionGroupKey/$optionKey.patch"
 
-      val patchFiles = optionPatchFiles.toSeq :+ archetypePatchFile
+      val patchFiles = optionPatchFiles.toSeq ++ archetypePatches :+ archetypeOptionsPatchFile
 
       val patches = ZIO.foreach(patchFiles):
         path =>

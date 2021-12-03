@@ -16,6 +16,7 @@ A little webapp to start new ZIO projects. Inspired by Typesafe Activator, start
 - If an option has only 1 option, select or don't show it?
 - Test cleanup
 - Cache zips
+- Disable action button until options are selected
 
 ## Notes
 - `src/main/resources/start/options/*/*.patch` must have a first line that is the label for the option in the UI

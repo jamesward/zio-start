@@ -18,7 +18,7 @@
 
 --- project/plugins.sbt
 +++ project/plugins.sbt
-@@ -0,0 +1 @@
+@@ -0,0 +1,2 @@
 +addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
 
 --- src/main/scala/Main.scala

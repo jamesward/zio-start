@@ -13,6 +13,9 @@ A little webapp to start new ZIO projects. Inspired by Typesafe Activator, start
 - Generate the matrix of projects at build time?
 - Run tests in CI
 - GraalVMify
+- If an option has only 1 option, select or don't show it?
+- Test cleanup
+- Cache zips
 
 ## Notes
 - `src/main/resources/start/options/*/*.patch` must have a first line that is the label for the option in the UI

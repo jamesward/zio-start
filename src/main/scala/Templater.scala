@@ -183,7 +183,7 @@ object Templater:
           for
             maybeIn <- ZStream.fromInputStream(is).transduce(ZTransducer.utf8Decode).runLast
             in = maybeIn.get // todo
-            process <- Command("patch", "-p0")
+            process <- Command("patch", "-p0", "--no-backup-if-mismatch")
                    .workingDirectory(dir)
                    .stdin(ProcessInput.fromUTF8String(in)) // todo: fromStream
                    .run

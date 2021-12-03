@@ -85,8 +85,8 @@
                                             @optionGroupKey:
                                             @for((optionKey, optionLabel) <- options) {
                                                 <div class="form-check">
-                                                    <input class="form-check-input @archetype-option" type="radio" name="@optionGroupKey" value="@optionKey" id="@optionGroupKey-@optionKey">
-                                                    <label class="form-check-label" for="@optionGroupKey-@optionKey">@optionLabel</label>
+                                                    <input class="form-check-input @archetype-option" type="radio" name="@optionGroupKey" value="@optionKey" id="@archetype-@optionGroupKey-@optionKey">
+                                                    <label class="form-check-label" for="@archetype-@optionGroupKey-@optionKey">@optionLabel</label>
                                                 </div>
                                             }
                                         </div>

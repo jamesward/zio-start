@@ -1,35 +1,65 @@
---- src/main/scala/Hello.scala
-+++ src/main/scala/Hello.scala
-@@ -0,0 +1,10 @@
-+import zio._
-+import zio.console._
+--- build.sbt
++++ build.sbt
+@@ -3,2 +3,5 @@
 +
-+object Hello extends App {
-+
-+  val app = putStr("hello, world")
-+
-+  def run(args: List[String]) = app.exitCode
-+
-+}
++// temporary for zhttp-test
++resolvers += "Sonatype OSS Snapshots s01" at "https://s01.oss.sonatype.org/content/repositories/snapshots"
 
---- src/test/scala/HelloSpec.scala
-+++ src/test/scala/HelloSpec.scala
-@@ -0,0 +1,18 @@
-+import zio.test._
-+import zio.test.Assertion._
-+import zio.test.Assertion.Render._
-+import zio.test.environment.TestConsole
+ libraryDependencies ++= Seq(
+@@ -5,1 +5,4 @@
+   "dev.zio" %% "zio"          % zioVersion,
 +
-+object HelloSpec extends DefaultRunnableSpec {
++  "io.d11" %% "zhttp"         % "1.0.0.0-RC17",
 +
-+  def spec =
-+    suite("Hello")(
-+      testM("outputs hello, world") {
-+        for {
-+          _      <- Hello.app
-+          output <- TestConsole.output
-+        } yield assert(output)(equalTo(Vector("hello, world")))
+@@ -7,1 +7,3 @@
+   "dev.zio" %% "zio-test-sbt" % zioVersion % Test,
++
++  "io.d11" %% "zhttp-test" % "1.0.0.0-RC17+47-0ea2e2b7-SNAPSHOT" % Test,
+
+--- project/plugins.sbt
++++ project/plugins.sbt
+@@ -0,0 +1 @@
++addSbtPlugin("io.spray" % "sbt-revolver" % "0.9.1")
+
+--- src/main/scala/Main.scala
++++ src/main/scala/Main.scala
+@@ -0,0 +1,15 @@
++import zhttp.http.*
++import zhttp.service.Server
++import zio.App
++
++import java.io.IOException
++
++object Main extends App:
++
++  val app = Http.collect[Request] {
++    case Method.GET -> Root =>
++      Response.text("hello, world")
++  }
++
++  override def run(args: List[String]) =
++    Server.start(8080, app).exitCode
+
+--- src/test/scala/MainSpec.scala
++++ src/test/scala/MainSpec.scala
+@@ -0,0 +1,20 @@
++import zhttp.http.*
++import zhttp.test.*
++import zio.test.*
++import zio.test.Assertion.*
++import zio.test.Assertion.Render.*
++
++import java.io.IOException
++
++object MainSpec extends DefaultRunnableSpec:
++  def spec = suite("app")(
++    testM("valid response") {
++      val req = Request(Method.GET -> URL(Path("/")))
++      for {
++        resp <- Main.app(req)
++      } yield {
++        val expected = Response.text("hello, world")
++        assert(resp)(isSubtype[Response.HttpResponse[Any, Nothing]](equalTo(expected)))
 +      }
-+    )
-+
-+}
++    }
++  )

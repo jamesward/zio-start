@@ -1,13 +1,17 @@
 REST Application
 --- README.md
 +++ README.md
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,12 @@
 +# ZIO REST
 +
++ Run & Auto-Restart Server:
 +```
-+./sbt run
++./sbt ~reStart
 +```
 +
++ Check out: [localhost:8080](http://localhost:8080)
++
++ Test:
 +```
 +./sbt test
 +```

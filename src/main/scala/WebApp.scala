@@ -1,13 +1,9 @@
 import zhttp.http.*
 import zhttp.service.*
 import zio.*
-import zio.duration.durationInt
-import zio.system.env
 import zio.stream.*
-import io.netty.handler.codec.http.{HttpHeaderNames as JHttpHeaderNames, HttpHeaderValues as JHttpHeaderValues}
-import io.netty.util.CharsetUtil
 
-import java.io.{File, IOException}
+import java.io.File
 import java.nio.file.Files
 
 object WebApp extends App:
@@ -16,7 +12,7 @@ object WebApp extends App:
     case Method.GET -> !! =>
       def w(archetypes: ArchetypesWithLabels) =
         val content = HttpData.fromText(html.index(archetypes).toString())
-        val headers = List(Header.custom(JHttpHeaderNames.CONTENT_TYPE.toString, JHttpHeaderValues.TEXT_HTML.toString))
+        val headers = List(Header.contentTypeXhtmlXml)
         Response(Status.OK, headers, content)
       Templater.getArchetypes().fold(_ => Response(Status.INTERNAL_SERVER_ERROR), w)
 

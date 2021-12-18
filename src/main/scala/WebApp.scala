@@ -12,7 +12,7 @@ object WebApp extends App:
     case Method.GET -> !! =>
       def w(archetypes: ArchetypesWithLabels) =
         val content = HttpData.fromText(html.index(archetypes).toString())
-        val headers = List(Header.contentTypeXhtmlXml)
+        val headers = List(Header.contentTypeHtml)
         Response(Status.OK, headers, content)
       Templater.getArchetypes().fold(_ => Response(Status.INTERNAL_SERVER_ERROR), w)
 
